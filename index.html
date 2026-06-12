@@ -6,13 +6,14 @@
 <meta name="theme-color" content="#0b0f1a">
 <title>⚡ Roanoke → Austin Chargers</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root{
     --bg:#0b0f1a; --card:#161c2b; --card2:#1d2536; --line:#2a3346;
-    --txt:#e9edf5; --dim:#9aa6bd; --green:#1fbf5a; --yellow:#f2c037; --red:#e0524a;
+    --txt:#e9edf5; --dim:#aeb9cf; --green:#1fbf5a; --yellow:#f2c037; --red:#e0524a;
     --accent:#3b82f6;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
@@ -20,50 +21,56 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     font-size:16px; line-height:1.4}
   body{padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 24px) env(safe-area-inset-left)}
-  header{position:sticky; top:0; z-index:10; background:rgba(11,15,26,.92);
+  header{position:sticky; top:0; z-index:10; background:rgba(11,15,26,.94);
     backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 14px 10px}
   h1{font-size:17px; margin:0 0 6px; font-weight:700; letter-spacing:.2px}
-  .status{font-size:12.5px; color:var(--dim); min-height:16px; margin-bottom:9px}
+  .status{font-size:13px; color:var(--dim); min-height:17px; margin-bottom:9px}
   .status b{color:var(--txt); font-weight:600}
+  .status .stale{color:var(--yellow)}
   .controls{display:flex; gap:8px; flex-wrap:wrap}
-  .btn{flex:1 1 auto; min-width:0; border:1px solid var(--line); background:var(--card2);
-    color:var(--txt); border-radius:10px; padding:9px 8px; font-size:13px; font-weight:600;
+  .btn{flex:1 1 calc(50% - 4px); min-width:0; border:1px solid var(--line); background:var(--card2);
+    color:var(--txt); border-radius:10px; padding:11px 8px; font-size:13.5px; font-weight:600;
     text-align:center; cursor:pointer; user-select:none; white-space:nowrap}
   .btn.on{background:var(--accent); border-color:var(--accent); color:#fff}
-  .btn small{display:block; font-weight:500; font-size:10.5px; opacity:.8; margin-top:1px}
+  .btn small{display:block; font-weight:500; font-size:11px; opacity:.85; margin-top:1px}
   main{padding:12px 12px 0; max-width:680px; margin:0 auto}
   .leg-head{font-size:12px; font-weight:700; color:var(--dim); text-transform:uppercase;
     letter-spacing:.6px; margin:14px 4px 6px}
-  .card{background:var(--card); border:1px solid var(--line); border-left-width:5px;
+  .card{background:var(--card); border:1px solid var(--line); border-left-width:6px;
     border-radius:14px; padding:12px 13px; margin-bottom:11px}
   .card.green{border-left-color:var(--green)}
   .card.yellow{border-left-color:var(--yellow)}
   .card.red{border-left-color:var(--red)}
-  .ctop{display:flex; align-items:flex-start; gap:10px}
-  .verdict{font-size:24px; line-height:1; flex:0 0 auto; margin-top:1px}
+  .ctop{display:flex; align-items:flex-start; gap:11px}
+  .dot{flex:0 0 auto; width:30px; height:30px; border-radius:50%; margin-top:2px}
+  .dot.green{background:var(--green)} .dot.yellow{background:var(--yellow)} .dot.red{background:var(--red)}
   .ctitle{flex:1 1 auto; min-width:0}
   .cname{font-size:16px; font-weight:700; margin:0}
   .cmeta{font-size:12.5px; color:var(--dim); margin-top:2px}
+  .reason{font-size:13.5px; font-weight:600; margin-top:3px}
+  .reason.green{color:#7fe3a4} .reason.yellow{color:#f6d27a} .reason.red{color:#f0938c}
   .away{flex:0 0 auto; text-align:right; font-size:12px; color:var(--dim); font-weight:600; margin-top:2px}
   .away b{display:block; font-size:15px; color:var(--accent)}
   .pills{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0}
-  .pill{font-size:12px; background:var(--card2); border:1px solid var(--line);
-    border-radius:999px; padding:3px 9px; white-space:nowrap}
-  .pill.hi{border-color:var(--green); color:#bff3d1}
-  .pill.lo{border-color:var(--red); color:#f4c4c0}
+  .pill{font-size:12.5px; background:var(--card2); border:1px solid var(--line);
+    border-radius:999px; padding:4px 10px; white-space:nowrap}
+  .pill.hi{border-color:var(--green); background:rgba(31,191,90,.16); color:#cdf6d9}
+  .pill.lo{border-color:var(--red); background:rgba(224,82,74,.16); color:#f7cfcc}
   .perks{font-size:15px; margin-top:8px; letter-spacing:2px}
   .food{font-size:13px; color:var(--dim); margin-top:8px}
-  .food b{color:var(--txt); font-weight:600}
-  .notes{font-size:12.5px; color:var(--dim); margin-top:7px; font-style:italic}
-  .notes.warn{color:#f4c4c0; font-style:normal}
-  .skip{font-size:12.5px; margin-top:8px; padding:7px 10px; border-radius:9px;
-    background:rgba(31,191,90,.10); border:1px solid rgba(31,191,90,.35); color:#bff3d1}
-  .skip b{color:#dffbe8}
+  .notes{font-size:12.5px; color:var(--dim); margin-top:7px}
+  .alert{font-size:13px; font-weight:600; margin-top:9px; padding:7px 10px; border-radius:9px}
+  .alert.closed{background:rgba(224,82,74,.16); border:1px solid rgba(224,82,74,.5); color:#f7cfcc}
+  .alert.soon{background:rgba(242,192,55,.14); border:1px solid rgba(242,192,55,.45); color:#f6d27a}
+  .skip{font-size:13px; margin-top:9px; padding:7px 10px; border-radius:9px;
+    background:rgba(31,191,90,.12); border:1px solid rgba(31,191,90,.4); color:#cdf6d9}
+  .skip b{color:#e6fbee}
   .nav{display:inline-flex; align-items:center; gap:6px; margin-top:11px;
     background:var(--card2); border:1px solid var(--line); border-radius:10px;
-    padding:8px 13px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none}
-  .empty{text-align:center; color:var(--dim); padding:40px 20px; font-size:14px}
-  .foot{text-align:center; color:#5b6475; font-size:11px; padding:22px 16px 6px; line-height:1.6}
+    padding:11px 16px; font-size:13.5px; font-weight:600; color:#9cc2ff; text-decoration:none}
+  .empty{text-align:center; color:var(--dim); padding:34px 20px 10px; font-size:14px}
+  .empty .btn{display:inline-block; flex:0 0 auto; margin-top:14px; padding:12px 22px}
+  .foot{text-align:center; color:#7e8aa3; font-size:11.5px; padding:22px 16px 6px; line-height:1.6}
 </style>
 </head>
 <body>
@@ -73,25 +80,29 @@
   <div class="controls">
     <div class="btn" id="gpsBtn">📍 Use my location<small id="gpsSub">GPS off</small></div>
     <div class="btn on" id="spdBtn">⚡ Fast only<small>≥250 kW</small></div>
+    <div class="btn" id="dogBtn">🐕 Dog + 🚻<small>good for the dog</small></div>
     <div class="btn" id="allBtn">🗺️ Show all<small>ignore GPS</small></div>
   </div>
 </header>
 <main>
   <div id="list"></div>
   <div class="foot">
-    Verdict 🟢 pull in · 🟡 check one thing · perks 🐕 dog 🧺 picnic 🚶 walkable.<br>
-    Speed &amp; stalls are solid; walk/picnic/dog are estimates. Coords approximate.<br>
+    🟢 pull in · 🟡 check one thing · 🔴 slow/avoid · perks 🐕 dog 🧺 picnic 🚶 walkable.<br>
+    Keep this screen on for live GPS. Speed &amp; stalls are solid; walk/picnic/dog are estimates.<br>
     Works offline once loaded. Built for the June 2026 drive.
   </div>
 </main>
 <script>
-// ---- Destination & trip legs (cumulative miles from Roanoke) ----
-const AUSTIN = {lat:30.27, lng:-97.74};
+// ---------- trip model ----------
 const LEG_BASE = {1:0, 2:440, 3:1100};
+const TOTAL_TRIP = 1295;            // approx route miles Roanoke -> Austin
 const LEG_NAME = {1:"Leg 1 · Roanoke → Nashville (today)", 2:"Leg 2 · Nashville → Dallas (Sat)", 3:"Leg 3 · Dallas → Austin (Sun)"};
-const BUFFER_MI = 30; // keep showing a stop until you're this far past it
+const BUFFER_MI = 30;               // keep showing a stop until you're this far past it (route miles)
+const SKIP_RANGE = 160;             // only suggest skipping to a green within plausible single-hop range
+const STALE_SEC = 120;              // GPS fix older than this is flagged stale
 
-// ---- Charger data ----
+// ---------- charger data ----------
+// bathClose: hour (24h) after which the on-site restroom is closed (only where a real closing time is known)
 const C = [
  {leg:1,mi:73, name:"Wytheville — Holiday Inn Express", city:"Wytheville, VA", lat:36.95,lng:-81.09, speed:150,arch:"V2",stalls:6, bath:"Yes (store hrs)", walk:"Low",picnic:"Low",dog:"Moderate", food:"Short drive: Waffle House, Shoney’s; full strip at Exit 73", notes:"Slowest/smallest — 6 paired stalls back up on busy days. Top-up only.", addr:"165 Malin Dr, Wytheville, VA 24382"},
  {leg:1,mi:145,name:"Bristol VA — Sheetz (Lee Hwy)", city:"Bristol, VA", lat:36.62,lng:-82.13, speed:250,arch:"V3",stalls:8, bath:"Yes 24hr", walk:"Good",picnic:"Low",dog:"Moderate", food:"Sheetz made-to-order kitchen at the stalls", notes:"Fast first-leg stop. Clean 24hr restroom. ~$0.53/kWh.", addr:"2415 Lee Highway, Bristol, VA 24202"},
@@ -101,35 +112,28 @@ const C = [
  {leg:1,mi:360,name:"Cookeville — Jackson Plaza", city:"Cookeville, TN", lat:36.16,lng:-85.51, speed:150,arch:"V2",stalls:8, bath:"Likely", walk:"Moderate",picnic:"Low",dog:"Low", food:"Grandma’s Pancake House, Sonic, Zaxby’s", notes:"Reliable strip-mall, but 150 kW + 1.3 mi detour.", addr:"377 W Jackson St, Cookeville, TN 38501"},
  {leg:1,mi:425,name:"Mount Juliet (replaces Lebanon)", city:"Mount Juliet, TN", lat:36.20,lng:-86.52, speed:250,arch:"V3",stalls:11, bath:"Unknown", walk:"Moderate",picnic:"Unknown",dog:"Unknown", food:"Providence/Mt Juliet retail corridor", notes:"Replaces the dead Lebanon site. Verify amenities on PlugShare.", addr:"Mount Juliet, TN (off I-40, ~15 mi E of Nashville)"},
 
- {leg:2,mi:85, name:"Jackson — Casey Jones Village", city:"Jackson, TN", lat:35.66,lng:-88.85, speed:250,arch:"V3",stalls:24, bath:"Yes (store hrs)", walk:"Good",picnic:"Good",dog:"Good", food:"Old Country Store restaurant; chains at exit", notes:"First stop. 24 stalls, rarely a wait. Pleasant village grounds.", addr:"56 Casey Jones Lane, Jackson, TN 38305"},
- {leg:2,mi:210,name:"West Memphis — Cracker Barrel", city:"West Memphis, AR", lat:35.15,lng:-90.18, speed:250,arch:"V3",stalls:10, bath:"Yes (store hrs)", walk:"Moderate",picnic:"Low",dog:"Good", food:"Cracker Barrel + truck-stop strip", notes:"Closed the old I-40 Arkansas gap. Porch + dog grass.", addr:"Cracker Barrel, near I-40, West Memphis, AR"},
+ {leg:2,mi:85, name:"Jackson — Casey Jones Village", city:"Jackson, TN", lat:35.66,lng:-88.85, speed:250,arch:"V3",stalls:24, bath:"Yes (store hrs)", bathClose:21, walk:"Good",picnic:"Good",dog:"Good", food:"Old Country Store restaurant; chains at exit", notes:"First stop. 24 stalls, rarely a wait. Pleasant village grounds.", addr:"56 Casey Jones Lane, Jackson, TN 38305"},
+ {leg:2,mi:210,name:"West Memphis — Cracker Barrel", city:"West Memphis, AR", lat:35.15,lng:-90.18, speed:250,arch:"V3",stalls:10, bath:"Yes (store hrs)", bathClose:22, walk:"Moderate",picnic:"Low",dog:"Good", food:"Cracker Barrel + truck-stop strip", notes:"Closed the old I-40 Arkansas gap. Porch + dog grass.", addr:"Cracker Barrel, near I-40, West Memphis, AR"},
  {leg:2,mi:295,name:"Brinkley — Pine Crest Center", city:"Brinkley, AR", lat:34.89,lng:-91.19, speed:250,arch:"V3",stalls:8, bath:"Likely", walk:"Moderate",picnic:"Low",dog:"Low", food:"Brinkley exit fast food", notes:"Mid-Arkansas, 0.7 mi off I-40. Low congestion.", addr:"1401 Pinecrest St, Brinkley, AR 72021"},
- {leg:2,mi:415,name:"Little Rock — Outlets of Little Rock", city:"Little Rock, AR", lat:34.66,lng:-92.45, speed:250,arch:"V3",stalls:12, bath:"Yes (store hrs)", walk:"Good",picnic:"Good",dog:"Good", food:"Outlet food court + Bass Pro restaurant", notes:"Best stop on this leg — walkable mall, clean restrooms, food, dog grass.", addr:"11201 Bass Pro Parkway, Little Rock, AR 72210"},
+ {leg:2,mi:415,name:"Little Rock — Outlets of Little Rock", city:"Little Rock, AR", lat:34.66,lng:-92.45, speed:250,arch:"V3",stalls:12, bath:"Yes (store hrs)", bathClose:21, walk:"Good",picnic:"Good",dog:"Good", food:"Outlet food court + Bass Pro restaurant", notes:"Best stop on this leg — walkable mall, clean restrooms, food, dog grass.", addr:"11201 Bass Pro Parkway, Little Rock, AR 72210"},
  {leg:2,mi:515,name:"Hope — Exxon", city:"Hope, AR", lat:33.68,lng:-93.59, speed:250,arch:"V3",stalls:16, bath:"Yes 24hr", walk:"Moderate",picnic:"Low",dog:"Low", food:"Convenience store + Hope exit fast food", notes:"16 stalls, no wait, 24hr c-store restroom.", addr:"1615 N Hervey St, Hope, AR 71801"},
- {leg:2,mi:545,name:"Texarkana — Central Mall", city:"Texarkana, TX", lat:33.46,lng:-94.08, speed:150,arch:"V2",stalls:8, bath:"Yes (store hrs)", walk:"Good",picnic:"Low",dog:"Moderate", food:"Olive Garden on-site; mall food court", notes:"150 kW — slow. But walkable to mall + restaurants.", addr:"3101 Mall Drive, Texarkana, TX 75503"},
+ {leg:2,mi:545,name:"Texarkana — Central Mall", city:"Texarkana, TX", lat:33.46,lng:-94.08, speed:150,arch:"V2",stalls:8, bath:"Yes (store hrs)", bathClose:21, walk:"Good",picnic:"Low",dog:"Moderate", food:"Olive Garden on-site; mall food court", notes:"150 kW — slow. But walkable to mall + restaurants.", addr:"3101 Mall Drive, Texarkana, TX 75503"},
  {leg:2,mi:595,name:"Sulphur Springs — Downtown", city:"Sulphur Springs, TX", lat:33.14,lng:-95.60, speed:150,arch:"V2",stalls:8, bath:"Likely", walk:"Good",picnic:"Good",dog:"Good", food:"Walkable downtown square — local restaurants", notes:"Loveliest stop (picnic/dog), but 150 kW + 1 mi off I-30.", addr:"300 W Tomlinson St, Sulphur Springs, TX 75482"},
  {leg:2,mi:625,name:"Greenville — near Rudy’s BBQ", city:"Greenville, TX", lat:33.11,lng:-96.07, speed:250,arch:"V4",stalls:12, bath:"Likely", walk:"Good",picnic:"Low",dog:"Moderate", food:"Rudy’s BBQ next door + retail cluster", notes:"New (Apr 2025), likely V4. ~50 mi from Dallas.", addr:"~3002 I-30 Frontage Rd, Greenville, TX 75401"},
 
  {leg:3,mi:50, name:"Italy — Love’s Travel Stop", city:"Italy, TX", lat:32.16,lng:-96.88, speed:150,arch:"V2",stalls:10, bath:"Yes 24hr", walk:"Low",picnic:"Low",dog:"Moderate", food:"Love’s store + embedded Carl’s Jr.", notes:"Truck stop, 150 kW. Quick top-up only.", addr:"1021 Dale Evans Dr, Italy, TX 76651"},
  {leg:3,mi:65, name:"Hillsboro — Buc-ee’s", city:"Hillsboro, TX", lat:32.02,lng:-97.10, speed:250,arch:"V4",stalls:12, bath:"Yes 24hr", walk:"Moderate",picnic:"Low",dog:"Moderate", food:"Buc-ee’s — brisket, Beaver Nuggets, coffee", notes:"New V4 Buc-ee’s. Fast + great food.", addr:"165 State Hwy 77, Hillsboro, TX 76645"},
- {leg:3,mi:90, name:"Waco / Bellmead — Collin St Bakery", city:"Bellmead (Waco), TX", lat:31.60,lng:-97.10, speed:250,arch:"Mixed",stalls:22, bath:"Yes (store hrs)", walk:"Good",picnic:"Moderate",dog:"Low", food:"Collin Street Bakery (free coffee for Tesla owners)", notes:"CAUTION: throttles when busy + bakery/restrooms close ~6 PM. Aim for rear 250 kW stalls.", warn:true, addr:"701 N I-35, Bellmead, TX 76705"},
+ {leg:3,mi:90, name:"Waco / Bellmead — Collin St Bakery", city:"Bellmead (Waco), TX", lat:31.60,lng:-97.10, speed:250,arch:"Mixed",stalls:22, bath:"Yes (store hrs)", bathClose:18, walk:"Good",picnic:"Moderate",dog:"Low", food:"Collin Street Bakery (free coffee for Tesla owners)", notes:"Throttles when busy. Aim for rear 250 kW stalls. Bakery/restrooms close ~6 PM.", addr:"701 N I-35, Bellmead, TX 76705"},
  {leg:3,mi:125,name:"Temple — Buc-ee’s", city:"Temple, TX", lat:31.13,lng:-97.40, speed:250,arch:"V3",stalls:48, bath:"Yes 24hr", walk:"Moderate",picnic:"Low",dog:"Moderate", food:"Buc-ee’s full hot-food counter — best food stop", notes:"Best Leg-3 stop — ~48 stalls (never full), cleanest restrooms.", addr:"4155 N General Bruce Dr, Temple, TX 76501"},
- {leg:3,mi:165,name:"Georgetown — Wolf Ranch", city:"Georgetown, TX", lat:30.64,lng:-97.69, speed:250,arch:"V3",stalls:16, bath:"Yes (store hrs)", walk:"High",picnic:"Moderate",dog:"Moderate", food:"McAlister’s, Longhorn, MOD Pizza, Panda Express", notes:"Most walkable — real sit-down restaurants. Last good stop before Austin.", addr:"1015 W University Ave, Georgetown, TX 78628"},
- {leg:3,mi:180,name:"Round Rock — Market at Round Rock", city:"Round Rock, TX", lat:30.51,lng:-97.68, speed:250,arch:"V3",stalls:16, bath:"Yes (store hrs)", walk:"High",picnic:"Moderate",dog:"Moderate", food:"Freddy’s, Corner Bakery, Starbucks; Sprouts", notes:"Austin-metro. Only if arriving low or headed to N. Austin.", addr:"110 N I-35, Round Rock, TX 78681"}
+ {leg:3,mi:165,name:"Georgetown — Wolf Ranch", city:"Georgetown, TX", lat:30.64,lng:-97.69, speed:250,arch:"V3",stalls:16, bath:"Yes (store hrs)", bathClose:21, walk:"High",picnic:"Moderate",dog:"Moderate", food:"McAlister’s, Longhorn, MOD Pizza, Panda Express", notes:"Most walkable — real sit-down restaurants. Last good stop before Austin.", addr:"1015 W University Ave, Georgetown, TX 78628"},
+ {leg:3,mi:180,name:"Round Rock — Market at Round Rock", city:"Round Rock, TX", lat:30.51,lng:-97.68, speed:250,arch:"V3",stalls:16, bath:"Yes (store hrs)", bathClose:21, walk:"High",picnic:"Moderate",dog:"Moderate", food:"Freddy’s, Corner Bakery, Starbucks; Sprouts", notes:"Austin-metro. Only if arriving low or headed to N. Austin.", addr:"110 N I-35, Round Rock, TX 78681"}
 ];
 
-// precompute cumulative trip mile + distance-to-destination
-C.forEach(c=>{ c.cum = LEG_BASE[c.leg] + c.mi; c.toDest = haversine(c, AUSTIN); });
-// precompute the next green stop ahead (by trip mile) for skip-decisions
-C.forEach(c=> c.green = verdict(c).light === "🟢");
-const GREENS = C.filter(c=>c.green).slice().sort((a,b)=> a.cum - b.cum);
-const SKIP_RANGE = 160; // only suggest skipping to a green within plausible single-hop range
-function nextGreen(c){
-  for(const g of GREENS){ if(g.cum > c.cum){ const d = g.cum - c.cum; return d <= SKIP_RANGE ? {g, d} : null; } }
-  return null;
-}
+// ---------- precompute ----------
+C.forEach(c=>{ c.cum = LEG_BASE[c.leg] + c.mi; c.v = verdict(c); });
+const GREENS = C.filter(c=>c.v.cls==="green").slice().sort((a,b)=> a.cum - b.cum);
 
-// ---- helpers ----
+// ---------- pure helpers ----------
 function haversine(a,b){
   const R=3958.8, toR=Math.PI/180;
   const dLat=(b.lat-a.lat)*toR, dLng=(b.lng-a.lng)*toR;
@@ -137,72 +141,137 @@ function haversine(a,b){
   const x=Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
   return 2*R*Math.asin(Math.sqrt(x));
 }
+function bathOK(c){ return c.bath==="Yes 24hr" || c.bath==="Yes (store hrs)"; }
 function verdict(c){
   if(c.speed<250) return {light:"🔴",cls:"red"};
-  let light;
-  if(c.arch==="Mixed") light="🟡";
-  else if(c.stalls>=12 && (c.bath==="Yes 24hr"||c.bath==="Yes (store hrs)")) light="🟢";
-  else light="🟡";
+  let cls;
+  if(c.arch==="Mixed") cls="yellow";
+  else if(c.stalls>=12 && bathOK(c)) cls="green";
+  else cls="yellow";
   let perks="";
   if(c.dog==="Good") perks+="🐕 ";
   if(c.picnic==="Good") perks+="🧺 ";
   if(c.walk==="High") perks+="🚶 ";
-  return {light, perks:perks.trim(), cls: light==="🟢"?"green":"yellow"};
+  return {light: cls==="green"?"🟢":(cls==="yellow"?"🟡":"🔴"), cls, perks:perks.trim()};
 }
-function bathLabel(b){return {"Yes 24hr":"🚻 24hr","Yes (store hrs)":"🚻 store hrs","Likely":"🚻 likely","Unknown":"🚻 ?"}[b]||"🚻";}
-function navUrl(c){return "https://www.google.com/maps/dir/?api=1&destination="+c.lat+","+c.lng;}
+// B3: a one-line WHY for the verdict color
+function reason(c){
+  if(c.speed<250) return c.speed+" kW — slow charge";
+  if(c.arch==="Mixed") return "mixed 150/250 kW — throttles when busy";
+  const ok=bathOK(c);
+  if(c.stalls<12 && !ok) return "only "+c.stalls+" stalls + bathroom unconfirmed";
+  if(c.stalls<12) return "only "+c.stalls+" stalls — may wait";
+  if(!ok) return "bathroom "+(c.bath==="Unknown"?"unknown":"not confirmed");
+  return "fast · "+c.stalls+" stalls · restroom";
+}
+// B4: time-aware bathroom status (now = Date)
+function bathStatus(c, now){
+  const h = now.getHours() + now.getMinutes()/60;
+  if(c.bathClose!=null){
+    if(h >= c.bathClose) return {cls:"closed", txt:"⛔ Restrooms likely closed now (close ~"+fmtHr(c.bathClose)+")"};
+    if(h >= c.bathClose-1) return {cls:"soon", txt:"⏰ Restrooms close ~"+fmtHr(c.bathClose)};
+  } else if(c.bath==="Yes (store hrs)" && (h>=22 || h<6)){
+    return {cls:"soon", txt:"🌙 Bathroom tied to store hours — may be closed now"};
+  }
+  return null;
+}
+function fmtHr(h){ const ap=h>=12?"PM":"AM"; let hr=h%12; if(hr===0)hr=12; return hr+" "+ap; }
+function isDogStop(c){ return (c.dog==="Good"||c.dog==="Moderate") && c.bath!=="Unknown"; }
+function nextGreen(c){
+  for(const g of GREENS){ if(g.cum > c.cum){ const d=g.cum-c.cum; return d<=SKIP_RANGE ? {g,d} : null; } }
+  return null;
+}
+// A2: progress along the route in cumulative miles (nearest charger anchor — robust on the dogleg)
+function userProgress(u){
+  let best=null, bd=Infinity;
+  for(const c of C){ const d=haversine(u,c); if(d<bd){bd=d; best=c;} }
+  return {cum: best?best.cum:0, near:best, nearDist:bd};
+}
+function esc(s){return (s+"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));}
+function ago(d){ if(!d) return ""; const s=Math.max(0,Math.round((Date.now()-d.getTime())/1000)); return s<90? s+"s ago" : Math.round(s/60)+"m ago"; }
 
-// ---- state ----
-let user=null, fastOnly=true, showAll=false, watchId=null;
+// ---------- state ----------
+let user=null, lastFix=null, gpsLost=false, lastKey="";
+let fastOnly=true, dogOnly=false, showAll=false, watchId=null;
 const $=id=>document.getElementById(id);
 
 $("spdBtn").onclick=()=>{fastOnly=!fastOnly; $("spdBtn").classList.toggle("on",fastOnly); render();};
+$("dogBtn").onclick=()=>{dogOnly=!dogOnly; $("dogBtn").classList.toggle("on",dogOnly); render();};
 $("allBtn").onclick=()=>{showAll=!showAll; $("allBtn").classList.toggle("on",showAll); render();};
 $("gpsBtn").onclick=startGPS;
+window.resetFilters=()=>{ fastOnly=false; dogOnly=false; showAll=true;
+  $("spdBtn").classList.remove("on"); $("dogBtn").classList.remove("on"); $("allBtn").classList.add("on"); render(); };
 
 function startGPS(){
   if(!navigator.geolocation){ $("status").textContent="This browser can’t do GPS — showing all stops."; return; }
-  $("gpsBtn").classList.add("on"); $("gpsSub").textContent="locating…";
-  $("status").textContent="📍 Locating…";
+  $("gpsSub").textContent="locating…";
   if(watchId!==null) navigator.geolocation.clearWatch(watchId);
   watchId=navigator.geolocation.watchPosition(p=>{
-    user={lat:p.coords.latitude, lng:p.coords.longitude};
-    $("gpsSub").textContent="on";
-    render();
+    gpsLost=false; lastFix=new Date();
+    const lat=p.coords.latitude, lng=p.coords.longitude;
+    const key=lat.toFixed(3)+","+lng.toFixed(3);   // A: throttle full re-render to ~110m moves
+    user={lat,lng};
+    $("gpsBtn").classList.add("on"); $("gpsSub").textContent="on";
+    if(key!==lastKey){ lastKey=key; render(); } else { tick(); }
   }, err=>{
-    $("gpsBtn").classList.remove("on"); $("gpsSub").textContent="GPS off";
-    $("status").innerHTML="Location blocked. Enable it in Settings, or use <b>Show all</b>.";
-  }, {enableHighAccuracy:false, maximumAge:30000, timeout:15000});
+    if(user){ gpsLost=true; tick(); }   // keep last known position, just flag it
+    else { $("gpsBtn").classList.remove("on"); $("gpsSub").textContent="GPS off";
+      $("status").innerHTML="Location blocked. Enable it in Settings, or tap <b>Show all</b>."; }
+  }, {enableHighAccuracy:true, maximumAge:5000, timeout:15000});
 }
 
-function render(){
-  let rows=C.filter(c=>!(fastOnly && c.speed<250));
-  if(user){
-    const myDest=haversine(user, AUSTIN);
-    rows.forEach(c=> c.away=haversine(user,c));
-    if(!showAll) rows=rows.filter(c=> c.toDest <= myDest + BUFFER_MI);
-    rows.sort((a,b)=> b.toDest - a.toDest); // trip order, next-up first
-    const next=rows[0];
-    $("status").innerHTML = "📍 <b>"+Math.round(myDest)+" mi</b> from Austin · <b>"+rows.length+"</b> stops ahead"+
-      (next? " · next: <b>"+next.name.split(" — ")[0]+"</b> ~"+Math.round(next.away)+" mi":"");
+// ---------- view computation ----------
+function computeView(){
+  let rows=C.filter(c=> !(fastOnly && c.speed<250) && !(dogOnly && !isDogStop(c)));
+  if(user) rows.forEach(c=> c.away=haversine(user,c)); else C.forEach(c=> c.away=null);
+  let mode, prog=null, next=null;
+  if(user && !showAll){
+    prog=userProgress(user);
+    rows=rows.filter(c=> c.cum >= prog.cum - BUFFER_MI);
+    rows.sort((a,b)=> a.cum-b.cum);   // trip order: next-up first
+    next=rows[0]||null;
+    mode="ahead";
   } else {
     rows.sort((a,b)=> a.cum-b.cum);
-    if(!showAll) $("status").innerHTML="Tap <b>Use my location</b> to hide stops you’ve passed.";
+    mode = showAll ? "all" : "idle";
   }
+  return {rows, mode, prog, next};
+}
+function statusHTML(v){
+  if(v.mode==="all") return "🗺️ Showing <b>"+v.rows.length+"</b> stops — GPS ignored";
+  if(v.mode==="idle") return "Tap <b>Use my location</b> to hide stops you’ve passed.";
+  const toAustin=Math.max(0, Math.round(TOTAL_TRIP - v.prog.cum));
+  let s="📍 <b>~"+toAustin+" mi</b> to Austin · <b>"+v.rows.length+"</b> ahead";
+  if(v.next) s+=" · next: <b>"+esc(v.next.name.split(" — ")[0])+"</b> ~"+Math.round(v.next.away)+" mi";
+  if(gpsLost) s+=' · <span class="stale">⚠️ GPS lost — last known</span>';
+  else if(lastFix){ const a=ago(lastFix); const stale=(Date.now()-lastFix.getTime())/1000>STALE_SEC;
+    s+=' · <span'+(stale?' class="stale"':'')+'>'+(stale?'⚠️ ':'')+a+'</span>'; }
+  return s;
+}
 
+// ---------- render ----------
+function render(){ const v=computeView(); $("status").innerHTML=statusHTML(v); renderList(v); }
+function tick(){ if(!user) return; $("status").innerHTML=statusHTML(computeView()); } // status-only refresh
+
+function renderList(v){
   const list=$("list");
-  if(!rows.length){ list.innerHTML='<div class="empty">No stops match. Try “Show all” or turn off “Fast only”.</div>'; return; }
-
+  if(!v.rows.length){
+    list.innerHTML='<div class="empty">No stops match these filters.'+
+      '<div class="btn on" onclick="resetFilters()">🗺️ Show all stops</div></div>';
+    return;
+  }
+  const now=new Date();
   let html="", curLeg=null;
-  rows.forEach(c=>{
+  v.rows.forEach(c=>{
     if(c.leg!==curLeg){ curLeg=c.leg; html+='<div class="leg-head">'+LEG_NAME[c.leg]+'</div>'; }
-    const v=verdict(c);
+    const vd=c.v, bs=bathStatus(c, now);
     const bathCls = c.bath.startsWith("Yes")?"hi":(c.bath==="Unknown"?"lo":"");
-    html+='<div class="card '+v.cls+'">'+
+    html+='<div class="card '+vd.cls+'">'+
       '<div class="ctop">'+
-        '<div class="verdict">'+v.light+'</div>'+
+        '<div class="dot '+vd.cls+'" role="img" aria-label="'+(vd.cls==="green"?"Good stop":vd.cls==="yellow"?"Check first":"Avoid")+'"></div>'+
         '<div class="ctitle"><p class="cname">'+esc(c.name)+'</p>'+
-          '<div class="cmeta">'+esc(c.city)+' · mi '+c.mi+' into leg</div></div>'+
+          '<div class="cmeta">'+esc(c.city)+' · mi '+c.mi+' into leg</div>'+
+          '<div class="reason '+vd.cls+'">'+esc(reason(c))+'</div></div>'+
         (c.away!=null && user ? '<div class="away">away<b>~'+Math.round(c.away)+' mi</b></div>' : '')+
       '</div>'+
       '<div class="pills">'+
@@ -210,25 +279,32 @@ function render(){
         '<span class="pill">🅿️ '+c.stalls+' stalls</span>'+
         '<span class="pill '+bathCls+'">'+bathLabel(c.bath)+'</span>'+
       '</div>'+
-      (v.perks? '<div class="perks">'+v.perks+'</div>':'')+
+      (vd.perks? '<div class="perks">'+vd.perks+'</div>':'')+
       '<div class="food">🍴 '+esc(c.food)+'</div>'+
-      '<div class="notes'+(c.warn?' warn':'')+'">'+(c.warn?'⚠️ ':'')+esc(c.notes)+'</div>'+
-      skipHint(c, v)+
+      (bs? '<div class="alert '+bs.cls+'">'+bs.txt+'</div>':'')+
+      '<div class="notes">'+esc(c.notes)+'</div>'+
+      skipHint(c)+
       '<a class="nav" href="'+navUrl(c)+'" target="_blank" rel="noopener">🧭 Navigate</a>'+
     '</div>';
   });
   list.innerHTML=html;
 }
-function esc(s){return (s+"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));}
-function skipHint(c, v){
-  if(v.cls!=="yellow") return "";          // only on 🟡 stops
+function bathLabel(b){return {"Yes 24hr":"🚻 24hr","Yes (store hrs)":"🚻 store hrs","Likely":"🚻 likely","Unknown":"🚻 ?"}[b]||"🚻";}
+function navUrl(c){return "https://www.google.com/maps/dir/?api=1&destination="+c.lat+","+c.lng;}
+function skipHint(c){
+  if(c.v.cls!=="yellow") return "";
   const ng=nextGreen(c);
-  if(!ng) return "";                        // no green within range ahead
+  if(!ng) return "";
   return '<div class="skip">⏭️ <b>Skip OK?</b> Next 🟢 '+esc(ng.g.name.split(" — ")[0])+' in ~'+Math.round(ng.d)+' mi</div>';
 }
 
+// ---------- lifecycle ----------
 render();
-if("serviceWorker" in navigator){ navigator.serviceWorker.register("./sw.js").catch(()=>{}); }
+setInterval(tick, 15000);                                  // keep "updated Xs ago" / stale flag fresh
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) render(); }); // A/iOS: refresh on resume
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js", {updateViaCache:"none"}).catch(()=>{});
+}
 </script>
 </body>
 </html>
