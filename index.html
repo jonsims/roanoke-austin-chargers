@@ -56,6 +56,9 @@
   .food b{color:var(--txt); font-weight:600}
   .notes{font-size:12.5px; color:var(--dim); margin-top:7px; font-style:italic}
   .notes.warn{color:#f4c4c0; font-style:normal}
+  .skip{font-size:12.5px; margin-top:8px; padding:7px 10px; border-radius:9px;
+    background:rgba(31,191,90,.10); border:1px solid rgba(31,191,90,.35); color:#bff3d1}
+  .skip b{color:#dffbe8}
   .nav{display:inline-flex; align-items:center; gap:6px; margin-top:11px;
     background:var(--card2); border:1px solid var(--line); border-radius:10px;
     padding:8px 13px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none}
@@ -117,6 +120,14 @@ const C = [
 
 // precompute cumulative trip mile + distance-to-destination
 C.forEach(c=>{ c.cum = LEG_BASE[c.leg] + c.mi; c.toDest = haversine(c, AUSTIN); });
+// precompute the next green stop ahead (by trip mile) for skip-decisions
+C.forEach(c=> c.green = verdict(c).light === "🟢");
+const GREENS = C.filter(c=>c.green).slice().sort((a,b)=> a.cum - b.cum);
+const SKIP_RANGE = 160; // only suggest skipping to a green within plausible single-hop range
+function nextGreen(c){
+  for(const g of GREENS){ if(g.cum > c.cum){ const d = g.cum - c.cum; return d <= SKIP_RANGE ? {g, d} : null; } }
+  return null;
+}
 
 // ---- helpers ----
 function haversine(a,b){
@@ -202,12 +213,19 @@ function render(){
       (v.perks? '<div class="perks">'+v.perks+'</div>':'')+
       '<div class="food">🍴 '+esc(c.food)+'</div>'+
       '<div class="notes'+(c.warn?' warn':'')+'">'+(c.warn?'⚠️ ':'')+esc(c.notes)+'</div>'+
+      skipHint(c, v)+
       '<a class="nav" href="'+navUrl(c)+'" target="_blank" rel="noopener">🧭 Navigate</a>'+
     '</div>';
   });
   list.innerHTML=html;
 }
 function esc(s){return (s+"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));}
+function skipHint(c, v){
+  if(v.cls!=="yellow") return "";          // only on 🟡 stops
+  const ng=nextGreen(c);
+  if(!ng) return "";                        // no green within range ahead
+  return '<div class="skip">⏭️ <b>Skip OK?</b> Next 🟢 '+esc(ng.g.name.split(" — ")[0])+' in ~'+Math.round(ng.d)+' mi</div>';
+}
 
 render();
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("./sw.js").catch(()=>{}); }

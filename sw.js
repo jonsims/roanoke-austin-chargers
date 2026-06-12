@@ -1,5 +1,5 @@
 // Bump CACHE version to force an update after editing index.html
-const CACHE = "chargers-v1";
+const CACHE = "chargers-v2";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", e => {
