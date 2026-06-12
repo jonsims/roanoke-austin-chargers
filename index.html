@@ -12,82 +12,109 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root{
-    --bg:#0b0f1a; --card:#161c2b; --card2:#1d2536; --line:#2a3346;
-    --txt:#e9edf5; --dim:#aeb9cf; --green:#1fbf5a; --yellow:#f2c037; --red:#e0524a;
-    --accent:#3b82f6;
+    --bg:#0b0f1a; --card:#171d2e; --card2:#202a3d; --line:#2a3346;
+    --txt:#e9edf5; --dim:#c2cbdd; --green:#22c55e; --yellow:#f5b81f; --red:#ef4444;
+    --accent:#3b82f6; --accent-on:#2563eb;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html{font-size:100%}
   html,body{margin:0; background:var(--bg); color:var(--txt);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    font-size:16px; line-height:1.4}
+    line-height:1.4; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
   body{padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 24px) env(safe-area-inset-left)}
-  header{position:sticky; top:0; z-index:10; background:rgba(11,15,26,.94);
-    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 14px 10px}
-  h1{font-size:17px; margin:0 0 6px; font-weight:700; letter-spacing:.2px}
-  .status{font-size:13px; color:var(--dim); min-height:17px; margin-bottom:9px}
+  :focus-visible{outline:3px solid #9cc2ff; outline-offset:2px}
+  header{position:sticky; top:0; z-index:10; background:rgba(11,15,26,.96);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 14px 11px}
+  h1{font-size:1rem; margin:0 0 7px; font-weight:700; letter-spacing:.2px}
+  .status{font-size:.82rem; color:var(--dim); min-height:18px; margin-bottom:10px; font-variant-numeric:tabular-nums}
   .status b{color:var(--txt); font-weight:600}
   .status .stale{color:var(--yellow)}
-  .controls{display:flex; gap:8px; flex-wrap:wrap}
-  .btn{flex:1 1 calc(50% - 4px); min-width:0; border:1px solid var(--line); background:var(--card2);
-    color:var(--txt); border-radius:10px; padding:11px 8px; font-size:13.5px; font-weight:600;
-    text-align:center; cursor:pointer; user-select:none; white-space:nowrap}
-  .btn.on{background:var(--accent); border-color:var(--accent); color:#fff}
-  .btn small{display:block; font-weight:500; font-size:11px; opacity:.85; margin-top:1px}
+  .controls{display:flex; flex-direction:column; gap:8px}
+  .gps{width:100%; min-height:48px; display:flex; align-items:center; justify-content:center; gap:8px;
+    border:1px solid var(--accent); background:var(--card2); color:var(--txt); border-radius:12px;
+    font-weight:700; font-size:.95rem; font-family:inherit; appearance:none; -webkit-appearance:none;
+    cursor:pointer; user-select:none; transition:transform .08s ease, filter .08s ease}
+  .gps small{font-weight:500; font-size:.78rem; color:var(--dim)}
+  .gps.on{background:var(--accent-on); border-color:var(--accent-on); color:#fff}
+  .gps.on small{color:#dbe6ff}
+  .filters{display:flex; gap:8px}
+  .btn{flex:1 1 0; min-width:0; min-height:46px; border:1px solid var(--line); background:var(--card2);
+    color:var(--txt); border-radius:11px; padding:7px 4px; font-size:.82rem; font-weight:600;
+    font-family:inherit; appearance:none; -webkit-appearance:none; line-height:1.25;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; user-select:none; white-space:nowrap; transition:transform .08s ease, filter .08s ease}
+  .btn small{display:block; font-weight:500; font-size:.66rem; margin-top:1px; color:var(--dim)}
+  .btn::before{content:"○ "; opacity:.45; font-weight:700}
+  .btn.on{background:var(--accent-on); border-color:var(--accent-on); color:#fff}
+  .btn.on::before{content:"✓ "; opacity:1}
+  .btn.on small{color:#dbe6ff}
+  .gps:active, .btn:active, .nav:active{transform:scale(.97); filter:brightness(1.15)}
   main{padding:12px 12px 0; max-width:680px; margin:0 auto}
-  .leg-head{font-size:12px; font-weight:700; color:var(--dim); text-transform:uppercase;
-    letter-spacing:.6px; margin:14px 4px 6px}
-  .card{background:var(--card); border:1px solid var(--line); border-left-width:6px;
-    border-radius:14px; padding:12px 13px; margin-bottom:11px}
-  .card.green{border-left-color:var(--green)}
+  .leg-head{font-size:.74rem; font-weight:700; color:var(--dim); text-transform:uppercase;
+    letter-spacing:.6px; margin:16px 4px 8px; padding-bottom:6px; border-bottom:1px solid var(--line)}
+  .cardlist{list-style:none; margin:0; padding:0}
+  .card{background:var(--card); border:1px solid var(--line); border-left-width:4px;
+    border-radius:14px; padding:14px; margin-bottom:11px; box-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .card.green{border-left-color:var(--green); background:linear-gradient(180deg,rgba(34,197,94,.06),transparent),var(--card)}
   .card.yellow{border-left-color:var(--yellow)}
   .card.red{border-left-color:var(--red)}
-  .ctop{display:flex; align-items:flex-start; gap:11px}
-  .dot{flex:0 0 auto; width:30px; height:30px; border-radius:50%; margin-top:2px}
+  .card[aria-current]{box-shadow:0 0 0 2px var(--accent), 0 1px 3px rgba(0,0,0,.3)}
+  .ctop{display:flex; align-items:flex-start; gap:12px}
+  .dot{flex:0 0 auto; width:40px; height:40px; min-width:40px; border-radius:50%; margin-top:2px;
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:800;
+    line-height:1; color:#0b0f1a; box-shadow:0 0 0 4px rgba(255,255,255,.05), 0 2px 8px rgba(0,0,0,.4)}
   .dot.green{background:var(--green)} .dot.yellow{background:var(--yellow)} .dot.red{background:var(--red)}
   .ctitle{flex:1 1 auto; min-width:0}
-  .cname{font-size:16px; font-weight:700; margin:0}
-  .cmeta{font-size:12.5px; color:var(--dim); margin-top:2px}
-  .reason{font-size:13.5px; font-weight:600; margin-top:3px}
-  .reason.green{color:#7fe3a4} .reason.yellow{color:#f6d27a} .reason.red{color:#f0938c}
-  .away{flex:0 0 auto; text-align:right; font-size:12px; color:var(--dim); font-weight:600; margin-top:2px}
-  .away b{display:block; font-size:15px; color:var(--accent)}
-  .pills{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0}
-  .pill{font-size:12.5px; background:var(--card2); border:1px solid var(--line);
-    border-radius:999px; padding:4px 10px; white-space:nowrap}
-  .pill.hi{border-color:var(--green); background:rgba(31,191,90,.16); color:#cdf6d9}
-  .pill.lo{border-color:var(--red); background:rgba(224,82,74,.16); color:#f7cfcc}
-  .perks{font-size:15px; margin-top:8px; letter-spacing:2px}
-  .food{font-size:13px; color:var(--dim); margin-top:8px}
-  .notes{font-size:12.5px; color:var(--dim); margin-top:7px}
-  .alert{font-size:13px; font-weight:600; margin-top:9px; padding:7px 10px; border-radius:9px}
-  .alert.closed{background:rgba(224,82,74,.16); border:1px solid rgba(224,82,74,.5); color:#f7cfcc}
-  .alert.soon{background:rgba(242,192,55,.14); border:1px solid rgba(242,192,55,.45); color:#f6d27a}
-  .skip{font-size:13px; margin-top:9px; padding:7px 10px; border-radius:9px;
-    background:rgba(31,191,90,.12); border:1px solid rgba(31,191,90,.4); color:#cdf6d9}
+  .vword{font-size:.72rem; font-weight:800; letter-spacing:.6px; text-transform:uppercase}
+  .vword.green{color:#86efac} .vword.yellow{color:#fcd34d} .vword.red{color:#fca5a5}
+  .cname{font-size:1.12rem; font-weight:800; line-height:1.2; letter-spacing:-.2px; margin:2px 0 0}
+  .reason{font-size:.86rem; font-weight:700; margin-top:3px}
+  .reason.green{color:#86efac} .reason.yellow{color:#fcd34d} .reason.red{color:#fca5a5}
+  .cmeta{font-size:.76rem; color:var(--dim); margin-top:3px}
+  .away{flex:0 0 auto; text-align:right; font-size:.72rem; color:var(--dim); font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums}
+  .away b{display:block; font-size:1.05rem; color:#7da9ff; line-height:1.1}
+  .pills{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px}
+  .pill{font-size:.78rem; font-weight:600; background:var(--card2); border:1px solid var(--line);
+    border-radius:999px; padding:6px 11px; white-space:nowrap; color:var(--dim); font-variant-numeric:tabular-nums}
+  .pill.hi{border-color:var(--green); background:rgba(34,197,94,.16); color:#bbf7d0; font-weight:700}
+  .pill.lo{border-color:var(--red); background:rgba(239,68,68,.16); color:#fecaca; border-style:dashed}
+  .perks{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+  .perks span{display:inline-flex; align-items:center; gap:4px; background:var(--card2);
+    border:1px solid var(--line); border-radius:8px; padding:4px 9px; font-size:.72rem; color:var(--dim); font-weight:600}
+  .food{font-size:.8rem; color:var(--dim); margin-top:8px; opacity:.92}
+  .notes{font-size:.78rem; color:var(--dim); margin-top:8px; opacity:.82}
+  .alert{font-size:.82rem; font-weight:600; margin-top:8px; padding:8px 11px; border-radius:9px}
+  .alert.closed{background:rgba(239,68,68,.16); border:1px solid rgba(239,68,68,.5); color:#fecaca}
+  .alert.soon{background:rgba(245,184,31,.14); border:1px solid rgba(245,184,31,.45); color:#fcd34d}
+  .skip{font-size:.82rem; margin-top:8px; padding:8px 11px; border-radius:9px;
+    background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.4); color:#bbf7d0}
   .skip b{color:#e6fbee}
-  .nav{display:inline-flex; align-items:center; gap:6px; margin-top:11px;
-    background:var(--card2); border:1px solid var(--line); border-radius:10px;
-    padding:11px 16px; font-size:13.5px; font-weight:600; color:#9cc2ff; text-decoration:none}
-  .empty{text-align:center; color:var(--dim); padding:34px 20px 10px; font-size:14px}
-  .empty .btn{display:inline-block; flex:0 0 auto; margin-top:14px; padding:12px 22px}
-  .foot{text-align:center; color:#7e8aa3; font-size:11.5px; padding:22px 16px 6px; line-height:1.6}
+  .nav{display:flex; width:100%; box-sizing:border-box; align-items:center; justify-content:center; gap:8px;
+    margin-top:12px; min-height:48px; background:var(--card2); border:1px solid var(--accent); border-radius:12px;
+    font-size:.95rem; font-weight:700; color:#9cc2ff; text-decoration:none; transition:transform .08s ease, filter .08s ease}
+  .empty{text-align:center; color:var(--dim); padding:34px 20px 10px; font-size:.9rem}
+  .foot{text-align:center; color:#9aa6bf; font-size:.72rem; padding:24px 16px 6px; line-height:1.6}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+  @media (prefers-reduced-transparency: reduce){ header{background:var(--bg); backdrop-filter:none} }
 </style>
 </head>
 <body>
 <header>
   <h1>⚡ Roanoke → Austin Superchargers</h1>
-  <div class="status" id="status">Tap “Use my location” to hide stops you’ve passed.</div>
+  <div class="status" id="status" role="status" aria-live="polite">Tap “Use my location” to hide stops you’ve passed.</div>
   <div class="controls">
-    <div class="btn" id="gpsBtn">📍 Use my location<small id="gpsSub">GPS off</small></div>
-    <div class="btn on" id="spdBtn">⚡ Fast only<small>≥250 kW</small></div>
-    <div class="btn" id="dogBtn">🐕 Dog + 🚻<small>good for the dog</small></div>
-    <div class="btn" id="allBtn">🗺️ Show all<small>ignore GPS</small></div>
+    <button type="button" class="gps" id="gpsBtn" aria-pressed="false">📍 Use my location <small id="gpsSub">GPS off</small></button>
+    <div class="filters" role="group" aria-label="Filters">
+      <button type="button" class="btn on" id="spdBtn" aria-pressed="true">⚡ Fast only<small>≥250 kW</small></button>
+      <button type="button" class="btn" id="dogBtn" aria-pressed="false">🐕 Dog + 🚻<small>dog-friendly</small></button>
+      <button type="button" class="btn" id="allBtn" aria-pressed="false">🗺️ Show all<small>ignore GPS</small></button>
+    </div>
   </div>
 </header>
 <main>
   <div id="list"></div>
   <div class="foot">
-    🟢 pull in · 🟡 check one thing · 🔴 slow/avoid · perks 🐕 dog 🧺 picnic 🚶 walkable.<br>
+    ✓ pull in · ! check one thing · ✕ slow/avoid · chips show dog / picnic / walkable.<br>
     Keep this screen on for live GPS. Speed &amp; stalls are solid; walk/picnic/dog are estimates.<br>
     Works offline once loaded. Built for the June 2026 drive.
   </div>
@@ -194,13 +221,14 @@ function ago(d){ if(!d) return ""; const s=Math.max(0,Math.round((Date.now()-d.g
 let user=null, lastFix=null, gpsLost=false, lastKey="";
 let fastOnly=true, dogOnly=false, showAll=false, watchId=null;
 const $=id=>document.getElementById(id);
+function setPressed(el,on){ el.classList.toggle("on",on); el.setAttribute("aria-pressed", on?"true":"false"); }
 
-$("spdBtn").onclick=()=>{fastOnly=!fastOnly; $("spdBtn").classList.toggle("on",fastOnly); render();};
-$("dogBtn").onclick=()=>{dogOnly=!dogOnly; $("dogBtn").classList.toggle("on",dogOnly); render();};
-$("allBtn").onclick=()=>{showAll=!showAll; $("allBtn").classList.toggle("on",showAll); render();};
+$("spdBtn").onclick=()=>{fastOnly=!fastOnly; setPressed($("spdBtn"),fastOnly); render();};
+$("dogBtn").onclick=()=>{dogOnly=!dogOnly; setPressed($("dogBtn"),dogOnly); render();};
+$("allBtn").onclick=()=>{showAll=!showAll; setPressed($("allBtn"),showAll); render();};
 $("gpsBtn").onclick=startGPS;
 window.resetFilters=()=>{ fastOnly=false; dogOnly=false; showAll=true;
-  $("spdBtn").classList.remove("on"); $("dogBtn").classList.remove("on"); $("allBtn").classList.add("on"); render(); };
+  setPressed($("spdBtn"),false); setPressed($("dogBtn"),false); setPressed($("allBtn"),true); render(); };
 
 function startGPS(){
   if(!navigator.geolocation){ $("status").textContent="This browser can’t do GPS — showing all stops."; return; }
@@ -211,11 +239,11 @@ function startGPS(){
     const lat=p.coords.latitude, lng=p.coords.longitude;
     const key=lat.toFixed(3)+","+lng.toFixed(3);   // A: throttle full re-render to ~110m moves
     user={lat,lng};
-    $("gpsBtn").classList.add("on"); $("gpsSub").textContent="on";
+    setPressed($("gpsBtn"),true); $("gpsSub").textContent="on";
     if(key!==lastKey){ lastKey=key; render(); } else { tick(); }
   }, err=>{
     if(user){ gpsLost=true; tick(); }   // keep last known position, just flag it
-    else { $("gpsBtn").classList.remove("on"); $("gpsSub").textContent="GPS off";
+    else { setPressed($("gpsBtn"),false); $("gpsSub").textContent="GPS off";
       $("status").innerHTML="Location blocked. Enable it in Settings, or tap <b>Show all</b>."; }
   }, {enableHighAccuracy:true, maximumAge:5000, timeout:15000});
 }
@@ -253,40 +281,59 @@ function statusHTML(v){
 function render(){ const v=computeView(); $("status").innerHTML=statusHTML(v); renderList(v); }
 function tick(){ if(!user) return; $("status").innerHTML=statusHTML(computeView()); } // status-only refresh
 
+const DOT_GLYPH={green:"✓", yellow:"!", red:"✕"};
+const DOT_ARIA ={green:"Recommended stop", yellow:"Check one thing first", red:"Slow — avoid"};
+const V_WORD   ={green:"Pull in", yellow:"Check 1 thing", red:"Slow"};
+function perkChips(c){
+  let s="";
+  if(c.dog==="Good")    s+='<span>🐕 Dog</span>';
+  if(c.picnic==="Good") s+='<span>🧺 Picnic</span>';
+  if(c.walk==="High")   s+='<span>🚶 Walkable</span>';
+  return s ? '<div class="perks">'+s+'</div>' : "";
+}
 function renderList(v){
   const list=$("list");
   if(!v.rows.length){
     list.innerHTML='<div class="empty">No stops match these filters.'+
-      '<div class="btn on" onclick="resetFilters()">🗺️ Show all stops</div></div>';
+      '<button type="button" class="gps" style="max-width:260px;margin:16px auto 0" onclick="resetFilters()">🗺️ Show all stops</button></div>';
     return;
   }
   const now=new Date();
   let html="", curLeg=null;
-  v.rows.forEach(c=>{
-    if(c.leg!==curLeg){ curLeg=c.leg; html+='<div class="leg-head">'+LEG_NAME[c.leg]+'</div>'; }
+  v.rows.forEach((c,i)=>{
+    if(c.leg!==curLeg){
+      if(curLeg!==null) html+='</ul>';
+      curLeg=c.leg;
+      html+='<h2 class="leg-head">'+esc(LEG_NAME[c.leg])+'</h2><ul class="cardlist">';
+    }
     const vd=c.v, bs=bathStatus(c, now);
     const bathCls = c.bath.startsWith("Yes")?"hi":(c.bath==="Unknown"?"lo":"");
-    html+='<div class="card '+vd.cls+'">'+
+    const isNext = (user && !showAll && i===0);
+    html+='<li class="card '+vd.cls+'"'+(isNext?' aria-current="true"':'')+'>'+
       '<div class="ctop">'+
-        '<div class="dot '+vd.cls+'" role="img" aria-label="'+(vd.cls==="green"?"Good stop":vd.cls==="yellow"?"Check first":"Avoid")+'"></div>'+
-        '<div class="ctitle"><p class="cname">'+esc(c.name)+'</p>'+
+        '<div class="dot '+vd.cls+'" role="img" aria-label="'+DOT_ARIA[vd.cls]+'">'+DOT_GLYPH[vd.cls]+'</div>'+
+        '<div class="ctitle">'+
+          '<div class="vword '+vd.cls+'">'+V_WORD[vd.cls]+'</div>'+
+          '<h3 class="cname">'+esc(c.name)+'</h3>'+
+          '<div class="reason '+vd.cls+'">'+esc(reason(c))+'</div>'+
           '<div class="cmeta">'+esc(c.city)+' · mi '+c.mi+' into leg</div>'+
-          '<div class="reason '+vd.cls+'">'+esc(reason(c))+'</div></div>'+
-        (c.away!=null && user ? '<div class="away">away<b>~'+Math.round(c.away)+' mi</b></div>' : '')+
+        '</div>'+
+        (c.away!=null && user ? '<div class="away">ahead<b>'+Math.round(c.away)+' mi</b></div>' : '')+
       '</div>'+
       '<div class="pills">'+
-        '<span class="pill '+(c.speed>=250?'hi':'lo')+'">⚡ '+c.speed+' kW · '+c.arch+'</span>'+
+        '<span class="pill '+(c.speed>=250?'hi':'lo')+'">⚡ '+c.speed+' kW '+(c.speed>=250?'· fast':'· slow')+' · '+esc(c.arch)+'</span>'+
         '<span class="pill">🅿️ '+c.stalls+' stalls</span>'+
         '<span class="pill '+bathCls+'">'+bathLabel(c.bath)+'</span>'+
       '</div>'+
-      (vd.perks? '<div class="perks">'+vd.perks+'</div>':'')+
+      perkChips(c)+
       '<div class="food">🍴 '+esc(c.food)+'</div>'+
       (bs? '<div class="alert '+bs.cls+'">'+bs.txt+'</div>':'')+
       '<div class="notes">'+esc(c.notes)+'</div>'+
       skipHint(c)+
-      '<a class="nav" href="'+navUrl(c)+'" target="_blank" rel="noopener">🧭 Navigate</a>'+
-    '</div>';
+      '<a class="nav" href="'+navUrl(c)+'" target="_blank" rel="noopener">🧭 Navigate here</a>'+
+    '</li>';
   });
+  html+='</ul>';
   list.innerHTML=html;
 }
 function bathLabel(b){return {"Yes 24hr":"🚻 24hr","Yes (store hrs)":"🚻 store hrs","Likely":"🚻 likely","Unknown":"🚻 ?"}[b]||"🚻";}

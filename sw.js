@@ -1,6 +1,6 @@
 // Bump CACHE when you change cached assets. HTML is network-first so edits show up
 // immediately when online even if you forget to bump this; static assets are cache-first.
-const CACHE = "chargers-v3";
+const CACHE = "chargers-v4";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
